@@ -2,74 +2,59 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
+const bcrypt = require('bcrypt');
+// const { User } = require('../models');
+
 module.exports = {
-  // Endpoint POST /api/v1/users = menambahkan user baru beserta dengan profilnya.
-  registerUser: async (req, res) => {
-    const user = await prisma.users.create({
-      data: {
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        profile: {
-          create: {
-            identity_number: req.body.identity_number,
-            identity_type: req.body.identity_type,
-            address: req.body.address,
-          },
-        },
-      },
-    });
+ createUser: async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await User.create({ name, email, password: hashedPassword });
+      res.status(201).json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+ },
 
-    return res.json({
-      data: user,
-    });
-  },
+ getAllUsers: async (req, res) => {
+    try {
+      const users = await User.findMany();
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+ },
 
-  // menampilkan daftar users.
-  daftarUser: async (req, res) => {
-    const users = await prisma.users.findMany({
-      include: {
-        profile: true, // Memperlihatkan profile pada users
-      },
-    });
-    return res.json({
-      data: users,
-    });
-  },
+ getUserById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findUnique({ where: { id: parseInt(id) } });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+ },
 
-  // menampilkan detail informasi user (tampilkan juga profilnya).
-  InformasiUser: async (req, res) => {
-    const { userId } = req.params;
-    const user = await prisma.users.findUnique({
-      where: { id: +userId },
-    });
-    return res.json({
-      data: user,
-    });
-  },
+ updateUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, email, password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await User.update({ where: { id: parseInt(id) }, data: { name, email, password: hashedPassword } });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+ },
 
-  // Update User
-  updateUser: async (req, res) => {
-    const { userId } = req.params;
-    const user = await prisma.users.update({
-      where: { id: +userId },
-      data: {
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-      },
-    });
-    return res.json({
-      data: user,
-    });
-  },
-
-  // Delete User
-  deleteiUser: async (req, res) => {
-    const { userId } = req.params;
-    const user = await prisma.users.delete({
-      where: { id: +userId },
-    });
-    return res.json(user);
-  },
+ deleteUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.delete({ where: { id: parseInt(id) } });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+ },
 };

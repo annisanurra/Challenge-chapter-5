@@ -44,6 +44,9 @@ CREATE TABLE "bank_accounts_transactions" (
 CREATE UNIQUE INDEX "profiles_user_id_key" ON "profiles"("user_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "bank_accounts_user_id_key" ON "bank_accounts"("user_id");
 
 -- CreateIndex
