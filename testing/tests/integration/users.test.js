@@ -2,7 +2,7 @@ const app = require('../../../app');
 const request = require('supertest');
 
 let token = '';
-describe('Testing Users endpoint', () => {
+describe('Test Users endpoint', () => {
   beforeAll(async () => {
     const name = 'Annisa';
     const email = 'Annisa_0@gmail.com';
@@ -23,11 +23,11 @@ describe('Testing Users endpoint', () => {
       console.log('User login failed');
     }
   });
-  describe('Testing user POST /api/v1/users endpoint', () => {
+  describe('Test POST /api/v1/users endpoint', () => {
     test('test create user', async () => {
       const name = 'usertest2';
       const email = 'usertest2@mail.com';
-      const password = 'password123';
+      const password = 'password111';
       const { statusCode, body } = await request(app)
         .post('/api/v1/users')
         .send({
@@ -63,7 +63,7 @@ describe('Testing Users endpoint', () => {
     });
   });
 
-  describe('Testing get All of users GET /api/v1/users endpoint', () => {
+  describe('Test GET /api/v1/users endpoint', () => {
     test('test cari semua user', async () => {
       const { statusCode, body } = await request(app).get('/api/v1/users');
       expect(statusCode).toBe(200);
@@ -73,7 +73,7 @@ describe('Testing Users endpoint', () => {
     });
   });
 
-  describe('Testing get detail of user GET /api/v1/users/{userId} endpoint', () => {
+  describe('Test GET /api/v1/users/{userId} endpoint', () => {
     test('mendapat informasi detail user id yang terdaftar', async () => {
       const { statusCode, body } = await request(app).get(`/api/v1/users/${user.id}`);
       expect(statusCode).toBe(200);
@@ -91,11 +91,11 @@ describe('Testing Users endpoint', () => {
       expect(body.success).toBe(false);
     });
   });
-  describe('Testing update a user profile PUT /api/v1/users/{userId}', () => {
+  describe('Test PUT /api/v1/users/{userId}', () => {
     test('update data user', async () => {
       const identity_type = 'KTP';
-      const identity_number = '3418615371319391';
-      const address = 'Yogyakarta';
+      const identity_number = '9999999999';
+      const address = 'Boyolali';
 
       const { statusCode, body } = await request(app)
         .put(`/api/v1/users/${user.id}`)
